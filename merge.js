@@ -1,8 +1,3 @@
-// merge-subs.js
-// Sub-Store 文件脚本：追加 outbounds 并注入分组（回退版）
-// 用法：在 template.json → 操作 → 脚本操作（链接） 中填写：
-// https://你的RawURL/merge-subs.js#name=jiuguang&type=1
-
 (async function() {
   // 1. 从 URL Fragment 获取参数
   const { name, type } = $arguments;
