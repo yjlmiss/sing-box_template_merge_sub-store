@@ -1,7 +1,5 @@
 // append-outbounds.js
 // Sub-Store 文件脚本：只追加 outbounds
-// 用法：在 template.json → 操作 → 脚本操作（链接） 中填写：
-// https://你的RawURL/append-outbounds.js#name=jiuguang&type=1
 
 // 读取 URL 参数 name（订阅名）和 type（1=组合订阅，0=单条订阅）
 const { name, type } = $arguments;
