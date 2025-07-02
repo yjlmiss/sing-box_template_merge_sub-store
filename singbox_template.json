@@ -1,0 +1,381 @@
+{
+  "log": {
+    "level": "info",
+    "timestamp": true
+  },
+  "dns": {
+    "rules": [
+      {
+        "rule_set": "cnsite",
+        "server": "cn_dns"
+      },
+      {
+        "rule_set": "notcn",
+        "server": "proxy_dns"
+      }
+    ],
+    "servers": [
+      {
+        "tag": "cn_dns",
+        "server": "doh.pub",
+        "type": "https",
+        "detour": "国内直连",
+        "domain_resolver": "default_dns"
+      },
+      {
+        "tag": "proxy_dns",
+        "server": "1.1.1.1",
+        "type": "tls",
+        "detour": "默认节点"
+      },
+      {
+        "tag": "default_dns",
+        "server": "114.114.114.114",
+        "type": "udp",
+        "detour": "国内直连"
+      }
+    ]
+  },
+
+  "inbounds": [
+    {
+      "type": "tun",
+      "tag": "tun-in",
+      "interface_name": "",
+      "address": ["172.18.0.1/30"],
+      "mtu": 9000,
+      "auto_route": true,
+      "route_exclude_address": ["10.0.0.0/8", "100.64.0.0/10", "169.254.0.0/16", "172.16.0.0/12", "192.0.0.0/24", "192.168.0.0/16"],
+      "strict_route": false,
+      "endpoint_independent_nat": false,
+      "stack": "mixed",
+      "auto_redirect": true
+    }
+  ],
+  "outbounds": [
+    {
+      "type": "direct",
+      "tag": "direct-out"
+    },
+    {
+      "type": "block",
+      "tag": "block-out"
+    },
+    {
+      "type": "selector",
+      "tag": "默认节点",
+      "outbounds": ["自动选择", "direct-out", "手动切换", "香港节点", "台湾节点", "新加坡节点", "美国节点", "日本节点"]
+    },
+    {
+      "type": "urltest",
+      "tag": "自动选择",
+      "url": "https://cp.cloudflare.com",
+      "outbounds": [],
+      "interval": "300s"
+    },
+    {
+      "type": "selector",
+      "tag": "国内直连",
+      "outbounds": ["direct-out", "默认节点", "自动选择", "手动切换", "香港节点", "台湾节点", "新加坡节点", "美国节点", "日本节点"]
+    },
+    {
+      "type": "selector",
+      "tag": "哔哩哔哩",
+      "outbounds": ["国内直连", "默认节点", "自动选择", "手动切换", "香港节点", "台湾节点", "新加坡节点", "美国节点", "日本节点"]
+    },
+    {
+      "type": "selector",
+      "tag": "海外AI服务",
+      "outbounds": ["默认节点", "自动选择", "国内直连", "手动切换", "香港节点", "台湾节点", "新加坡节点", "美国节点", "日本节点"]
+    },
+    {
+      "type": "selector",
+      "tag": "海外流媒体",
+      "outbounds": ["默认节点", "自动选择", "国内直连", "手动切换", "香港节点", "台湾节点", "新加坡节点", "美国节点", "日本节点"]
+    },
+    {
+      "type": "selector",
+      "tag": "PayPal",
+      "outbounds": ["手动切换", "默认节点", "自动选择", "国内直连", "香港节点", "台湾节点", "新加坡节点", "美国节点", "日本节点"]
+    },
+    {
+      "type": "selector",
+      "tag": "TikTok",
+      "outbounds": ["默认节点", "自动选择", "国内直连", "手动切换", "香港节点", "台湾节点", "新加坡节点", "美国节点", "日本节点"]
+    },
+    {
+      "type": "selector",
+      "tag": "Telegram",
+      "outbounds": ["默认节点", "自动选择", "国内直连", "手动切换", "香港节点", "台湾节点", "新加坡节点", "美国节点", "日本节点"]
+    },
+    {
+      "type": "selector",
+      "tag": "Dcard",
+      "outbounds": ["台湾节点", "默认节点", "自动选择", "国内直连", "手动切换"]
+    },
+    {
+      "type": "selector",
+      "tag": "漏网之鱼",
+      "outbounds": ["默认节点", "自动选择", "国内直连", "手动切换", "香港节点", "台湾节点", "新加坡节点", "美国节点", "日本节点"]
+    },
+    {
+      "type": "urltest",
+      "tag": "香港节点",
+      "url": "https://cp.cloudflare.com",
+      "outbounds": [],
+      "interval": "300s"
+    },
+    {
+      "type": "urltest",
+      "tag": "台湾节点",
+      "url": "https://cp.cloudflare.com",
+      "outbounds": [],
+      "interval": "300s"
+    },
+    {
+      "type": "urltest",
+      "tag": "新加坡节点",
+      "url": "https://cp.cloudflare.com",
+      "outbounds": [],
+      "interval": "300s"
+    },
+    {
+      "type": "urltest",
+      "tag": "美国节点",
+      "url": "https://cp.cloudflare.com",
+      "outbounds": [],
+      "interval": "300s"
+    },
+    {
+      "type": "urltest",
+      "tag": "日本节点",
+      "url": "https://cp.cloudflare.com",
+      "outbounds": [],
+      "interval": "300s"
+    },
+    {
+      "type": "selector",
+      "tag": "手动切换",
+      "outbounds": []
+    }
+  ],
+  "route": {
+    "final": "漏网之鱼",
+    "auto_detect_interface": true,
+    "default_domain_resolver": "default_dns",
+    "rule_set": [
+      {
+        "tag": "privatesite",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/sing/geo/geosite/private.srs",
+        "update_interval": "24h",
+        "download_detour": "默认节点"
+      },
+      {
+        "tag": "privateip",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/sing/geo/geoip/private.srs",
+        "update_interval": "24h",
+        "download_detour": "默认节点"
+      },
+      {
+        "tag": "cnsite",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/sing/geo/geosite/cn.srs",
+        "update_interval": "24h",
+        "download_detour": "默认节点"
+      },
+      {
+        "tag": "cnip",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/sing/geo/geoip/cn.srs",
+        "update_interval": "24h",
+        "download_detour": "默认节点"
+      },
+      {
+        "tag": "cngame",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/sing/geo/geosite/category-games-!cn.srs",
+        "update_interval": "24h",
+        "download_detour": "默认节点"
+      },
+      {
+        "tag": "gfw",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/sing/geo/geosite/gfw.srs",
+        "update_interval": "24h",
+        "download_detour": "默认节点"
+      },
+      {
+        "tag": "proxy",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/sing/geo-lite/geosite/proxy.srs",
+        "update_interval": "24h",
+        "download_detour": "默认节点"
+      },
+      {
+        "tag": "aiservice",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/sing/geo/geosite/category-ai-!cn.srs",
+        "update_interval": "24h",
+        "download_detour": "默认节点"
+      },
+      {
+        "tag": "paypal",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/sing/geo/geosite/paypal.srs",
+        "update_interval": "24h",
+        "download_detour": "默认节点"
+      },
+      {
+        "tag": "tiktok",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/sing/geo/geosite/tiktok.srs",
+        "update_interval": "24h",
+        "download_detour": "默认节点"
+      },
+      {
+        "tag": "telegramip",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/sing/geo/geoip/telegram.srs",
+        "update_interval": "24h",
+        "download_detour": "默认节点"
+      },
+      {
+        "tag": "telegramsite",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/sing/geo/geosite/telegram.srs",
+        "update_interval": "24h",
+        "download_detour": "默认节点"
+      },
+      {
+        "tag": "netflixsite",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/sing/geo/geosite/netflix.srs",
+        "update_interval": "24h",
+        "download_detour": "默认节点"
+      },
+      {
+        "tag": "netflixip",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/sing/geo/geoip/netflix.srs",
+        "update_interval": "24h",
+        "download_detour": "默认节点"
+      },
+      {
+        "tag": "disney",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/sing/geo/geosite/disney.srs",
+        "update_interval": "24h",
+        "download_detour": "默认节点"
+      },
+      {
+        "tag": "hbo",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/sing/geo/geosite/hbo.srs",
+        "update_interval": "24h",
+        "download_detour": "默认节点"
+      },
+      {
+        "tag": "hulu",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/sing/geo/geosite/hulu.srs",
+        "update_interval": "24h",
+        "download_detour": "默认节点"
+      },
+      {
+        "tag": "bilibili",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/sing/geo/geosite/bilibili.srs",
+        "update_interval": "24h",
+        "download_detour": "默认节点"
+      },
+      {
+        "tag": "notcn",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/sing/geo/geosite/geolocation-!cn.srs",
+        "update_interval": "24h",
+        "download_detour": "默认节点"
+      }
+    ],
+    "rules": [
+      {
+        "inbound": "tun-in",
+        "action": "sniff",
+        "timeout": "1s"
+      },
+      {
+        "domain_suffix": "dcard.tw",
+        "outbound": "Dcard"
+      },
+      {
+        "domain_suffix": "emby.men",
+        "outbound": "默认节点"
+      },
+      {
+        "rule_set": "bilibili",
+        "outbound": "哔哩哔哩"
+      },
+      {
+        "rule_set": "paypal",
+        "outbound": "PayPal"
+      },
+      {
+        "rule_set": "aiservice",
+        "outbound": "海外AI服务"
+      },
+      {
+        "rule_set": ["telegramip", "telegramsite"],
+        "outbound": "Telegram"
+      },
+      {
+        "rule_set": "tiktok",
+        "outbound": "TikTok"
+      },
+      {
+        "rule_set": ["netflixsite", "netflixip", "hbo", "disney", "hulu"],
+        "outbound": "海外流媒体"
+      },
+      {
+        "rule_set": ["privatesite", "privateip", "cnsite", "cnip", "cngame"],
+        "outbound": "国内直连"
+      },
+      {
+        "rule_set": ["gfw", "proxy"],
+        "outbound": "默认节点"
+      }
+    ]
+  },
+  "experimental": {
+    "clash_api": {
+      "external_controller": "0.0.0.0:9090",
+      "external_ui": "./ui",
+      "secret": "",
+      "external_ui_download_url": "https://github.com/Zephyruso/zashboard/releases/latest/download/dist.zip",
+      "external_ui_download_detour": "默认节点",
+      "default_mode": "rule"
+    },
+    "cache_file": {
+      "enabled": true
+    }
+  }
+}
