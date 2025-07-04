@@ -1,7 +1,7 @@
-// append-outbounds-with-groups.js
-// Sub-Store 文件脚本：追加 outbounds 并注入“手动切换”“自动选择”两组 + 五大地区分组
+// Sub-Store 文件脚本：追加 outbounds 并将全部节点注入“手动切换”“自动选择”两组、
+// 以正则匹配方式将地区节点注入五地区分组（港台新美日）
 // 用法：在 template.json → 操作 → 脚本操作（链接） 中填写：
-// https://…/append-outbounds-with-groups.js#name=jiuguang&type=1
+// https://…/merge_sub.js#name=<订阅名称>&type=<订阅类型，0表示单条，1表示组合>
 
 const { name, type } = $arguments;
 
