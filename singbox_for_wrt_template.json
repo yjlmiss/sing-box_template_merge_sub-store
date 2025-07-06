@@ -36,12 +36,11 @@
       }
     ]
   },
-
   "inbounds": [
     {
       "type": "tun",
       "tag": "tun-in",
-      "interface_name": "",
+      "interface_name": "singbox_tun",
       "address": ["172.18.0.1/30"],
       "mtu": 9000,
       "auto_route": true,
@@ -114,11 +113,6 @@
       "outbounds": ["台湾节点", "默认节点", "自动选择", "国内直连", "手动切换"]
     },
     {
-      "type": "selector",
-      "tag": "漏网之鱼",
-      "outbounds": ["默认节点", "自动选择", "国内直连", "手动切换", "香港节点", "台湾节点", "新加坡节点", "美国节点", "日本节点"]
-    },
-    {
       "type": "urltest",
       "tag": "香港节点",
       "url": "https://cp.cloudflare.com",
@@ -160,7 +154,7 @@
     }
   ],
   "route": {
-    "final": "漏网之鱼",
+    "final": "默认节点",
     "auto_detect_interface": true,
     "default_domain_resolver": "default_dns",
     "rule_set": [
@@ -319,9 +313,11 @@
     ],
     "rules": [
       {
-        "inbound": "tun-in",
-        "action": "sniff",
-        "timeout": "1s"
+        "action": "sniff"
+      },
+      {
+        "protocol": "dns",
+        "action": "hijack-dns"
       },
       {
         "domain_suffix": "dcard.tw",
