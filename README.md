@@ -11,6 +11,7 @@
 https://raw.githubusercontent.com/LongLights/sing-box_template_merge_sub-store/refs/heads/main/merge_sub.js#name=<你在sub-store中的订阅名称>&type=<在sub-store中的订阅类型>
 ```
 type可以赋值0或1,0表示单条订阅，1表示组合订阅
+
 4. 添加脚本操作后再次访问sub-store中的singbox_template.json，就已经是把节点信息正确插入的完整可用配置了
 
 ## 鸣谢
