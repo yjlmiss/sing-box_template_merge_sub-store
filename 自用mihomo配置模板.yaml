@@ -9,6 +9,10 @@ proxy-providers:
       url: https://www.google.com/generate_204
       interval: 300
 
+# 统一延迟测速和tcp并发
+tcp-concurrent: true
+unified-delay: true
+
 #dns配置
 dns:
   respect-rules: true
