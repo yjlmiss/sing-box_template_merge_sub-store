@@ -30,24 +30,24 @@ const regions = {
   '🇸🇬 新加坡节点': /新加坡|SG|SIN|Singapore/i,
 };
 
-// 7. 匹配并追加到分组
-[
-  '⚙️ 手动切换',
-  '🎚️ 自动选择',
-  ...Object.keys(regions)
-].forEach(groupTag => {
+// 7. 需要追加节点的 7 个代理分组
+const otherGroups = ['⚙️ 手动切换', '🎚️ 自动选择'];
+const regionGroups = Object.keys(regions);
+const targetGroups = [...otherGroups, ...regionGroups];
+
+targetGroups.forEach(groupTag => {
   const group = config.outbounds.find(o => o.tag === groupTag && Array.isArray(o.outbounds));
   if (!group) return;
 
-  const matched = (groupTag === '⚙️ 手动切换' || groupTag === '🎚️ 自动选择')
-    ? allTags
-    : allTags.filter(tag => regions[groupTag].test(tag));
+  // 匹配所有符合条件的新节点
+  const matched = otherGroups.includes(groupTag)
+    ? allTags                             // 手动/自动 取全部
+    : allTags.filter(tag => regions[groupTag].test(tag));  // 地区组按正则匹配
 
-  const directLast = group.outbounds.includes('direct-tag');
-  const merged = Array.from(new Set([...group.outbounds, ...matched])).filter(t => t !== 'direct-tag');
-  if (directLast) merged.push('direct-tag');
-
-  group.outbounds = merged;
+  // 如果有匹配到节点，就用匹配结果；否则回退到 direct-tag
+  group.outbounds = matched.length > 0
+    ? matched
+    : ['direct-tag'];
 });
 
 // 8. 输出最终配置

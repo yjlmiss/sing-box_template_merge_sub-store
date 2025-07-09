@@ -24,20 +24,6 @@
       {
         "outbound": "any",
         "server": "cn_dns"
-      },
-      {
-        "type": "logical",
-        "mode": "and",
-        "rules": [
-          {
-            "rule_set": "notcn",
-            "invert": true
-          },
-          {
-            "rule_set": "cnip"
-          }
-        ],
-        "server": "proxy_dns"
       }
     ],
     "final": "proxy_dns",
@@ -74,13 +60,13 @@
       "type": "urltest",
       "tag": "🎚️ 自动选择",
       "url": "https://cp.cloudflare.com",
-      "outbounds": ["direct-tag"],
+      "outbounds": [],
       "interval": "300s"
     },
     {
       "type": "selector",
       "tag": "⚙️ 手动切换",
-      "outbounds": ["direct-tag"]
+      "outbounds": []
     },
     {
       "type": "selector",
@@ -131,35 +117,35 @@
       "type": "urltest",
       "tag": "🇭🇰 香港节点",
       "url": "https://cp.cloudflare.com",
-      "outbounds": ["direct-tag"],
+      "outbounds": [],
       "interval": "300s"
     },
     {
       "type": "urltest",
       "tag": "🇹🇼 台湾节点",
       "url": "https://cp.cloudflare.com",
-      "outbounds": ["direct-tag"],
+      "outbounds": [],
       "interval": "300s"
     },
     {
       "type": "urltest",
       "tag": "🇸🇬 新加坡节点",
       "url": "https://cp.cloudflare.com",
-      "outbounds": ["direct-tag"],
+      "outbounds": [],
       "interval": "300s"
     },
     {
       "type": "urltest",
       "tag": "🇺🇸 美国节点",
       "url": "https://cp.cloudflare.com",
-      "outbounds": ["direct-tag"],
+      "outbounds": [],
       "interval": "300s"
     },
     {
       "type": "urltest",
       "tag": "🇯🇵 日本节点",
       "url": "https://cp.cloudflare.com",
-      "outbounds": ["direct-tag"],
+      "outbounds": [],
       "interval": "300s"
     }
   ],
@@ -344,10 +330,6 @@
         "domain_suffix": "emby.bid",
         "ip_cidr": "172.247.36.7/32",
         "outbound": "📽️ 黑猫emby"
-      },
-      {
-        "domain_suffix": ["7pzzv.us", "j03og.app"],
-        "outbound": "🐱 默认节点"
       },
       {
         "rule_set": "bilibili",
