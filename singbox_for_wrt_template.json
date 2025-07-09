@@ -24,7 +24,7 @@
       }
     ],
     "final": "proxy_dns",
-    "disable_cache": false,
+    "disable_cache": true,
     "independent_cache": false,
     "strategy": "ipv4_only"
   },
