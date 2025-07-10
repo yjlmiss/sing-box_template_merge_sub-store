@@ -1,4 +1,14 @@
 {
+  "experimental": {
+    "clash_api": {
+      "external_controller": "0.0.0.0:9090",
+      "external_ui": "./ui",
+      "secret": "",
+      "external_ui_download_url": "https://github.com/Zephyruso/zashboard/releases/latest/download/dist.zip",
+      "external_ui_download_detour": "🐋 默认节点",
+      "default_mode": "rule"
+    }
+  },
   "log": {
     "level": "info",
     "timestamp": true
@@ -181,10 +191,10 @@
         "download_detour": "🐋 默认节点"
       },
       {
-        "tag": "cngame",
+        "tag": "cngames",
         "type": "remote",
-        "format": "format",
-        "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/sing/geo/geosite/category-games-!cn@cn.json",
+        "format": "binary",
+        "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/sing/geo/geosite/category-games-!cn@cn.srs",
         "update_interval": "24h",
         "download_detour": "🐋 默认节点"
       },
@@ -346,7 +356,7 @@
         "outbound": "🎥 海外流媒体"
       },
       {
-        "rule_set": ["privatesite", "privateip", "cnsite", "cnip", "cngame"],
+        "rule_set": ["privatesite", "privateip", "cnsite", "cnip", "cngames"],
         "outbound": "🚅 国内流量"
       },
       {
@@ -354,18 +364,5 @@
         "outbound": "🐋 默认节点"
       }
     ]
-  },
-  "experimental": {
-    "clash_api": {
-      "external_controller": "0.0.0.0:9090",
-      "external_ui": "./ui",
-      "secret": "",
-      "external_ui_download_url": "https://github.com/Zephyruso/zashboard/releases/latest/download/dist.zip",
-      "external_ui_download_detour": "🐋 默认节点",
-      "default_mode": "rule"
-    },
-    "cache_file": {
-      "enabled": true
-    }
   }
 }
