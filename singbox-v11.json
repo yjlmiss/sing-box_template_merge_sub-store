@@ -183,8 +183,8 @@
       {
         "tag": "cngame",
         "type": "remote",
-        "format": "binary",
-        "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/sing/geo/geosite/category-games-!cn.srs",
+        "format": "format",
+        "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/sing/geo/geosite/category-games-!cn@cn.json",
         "update_interval": "24h",
         "download_detour": "🐋 默认节点"
       },
