@@ -25,3 +25,7 @@ type可以赋值0或1,0表示单条订阅，1表示组合订阅
 
 ## 鸣谢
 这段js脚本是由chatgpt参考[xishang0128](https://github.com/xishang0128)大佬所写
+
+## 注意事项
+- 适用于OpenWrt的procd脚本、自动更新需要自行修改其中的工作目录
+- windows的bat更新脚本，直接下载不可用，需要手动复制其中的内容自己在windows创建（最好记事本编辑并且另存为ANSI编码格式）
