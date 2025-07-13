@@ -1,7 +1,7 @@
 # sing-box_template_merge_sub-store
 
 ## 使用说明
-本项目所搭载的js脚本，必须在[sub-store](https://github.com/sub-store-org/Sub-Store)内使用，仅测试了项目中的singbox模板，未测试其他模板，该模板官方1.12或1.12内核一定可以使用，其余版本未测试。
+本项目所搭载的js脚本，必须在[sub-store](https://github.com/sub-store-org/Sub-Store)内使用，仅测试了项目中的singbox模板，未测试其他模板，该模板官方1.12或1.11内核一定可以使用，其余版本未测试。
 
 适用1.12内核的：*singbox_for_win_template.json*  *singbox_for_wrt_template.json*，以及无分区的*for_win.json*  *for_wrt.json*
 
@@ -26,8 +26,6 @@ type可以赋值0或1,0表示单条订阅，1表示组合订阅
 无地区分组去掉了五个地区自动测速组，并且将提供的所有节点无脑追加到全部代理组（在模板中是10个分组，包括1个全量的自动测速组+9个selector组）
 
 后续自己添加新的代理组，或者删除模板原有代理组，将继续执行无脑追加的策略。
-
-
 
 ## 鸣谢
 这段js脚本是由chatgpt参考[xishang0128](https://github.com/xishang0128)大佬所写
