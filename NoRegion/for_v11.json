@@ -20,14 +20,12 @@
     "servers": [
       {
         "tag": "proxy_dns",
-        "type": "udp",
-        "server": "8.8.8.8",
+        "address": "8.8.8.8",
         "detour": "🐋 默认节点"
       },
       {
         "tag": "cn_dns",
-        "type": "udp",
-        "server": "114.114.114.114"
+        "address": "114.114.114.114"
       }
     ],
     "rules": [
@@ -76,6 +74,11 @@
     },
     {
       "type": "selector",
+      "tag": "🔗 中继节点",
+      "outbounds": ["🔄 直连入口"]
+    },
+    {
+      "type": "selector",
       "tag": "🚅 国内流量",
       "outbounds": ["🔄 直连入口", "🐋 默认节点", "🎚️ 自动选择"]
     },
@@ -118,7 +121,6 @@
   "route": {
     "final": "🐋 默认节点",
     "auto_detect_interface": true,
-    "default_domain_resolver": "cn_dns",
     "rule_set": [
       {
         "tag": "privatesite",
