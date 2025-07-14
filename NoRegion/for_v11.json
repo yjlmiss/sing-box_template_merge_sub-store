@@ -275,7 +275,7 @@
       },
       {
         "clash_mode": "Direct",
-        "outbound": "direct-tag"
+        "outbound": "🔄 直连入口"
       },
       {
         "clash_mode": "Global",
