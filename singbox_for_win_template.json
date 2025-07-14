@@ -347,7 +347,7 @@
       },
       {
         "rule_set": ["netflixsite", "netflixip", "hbo", "disney", "hulu"],
-        "outbound": "🎦 海外流媒体"
+        "outbound": "🎥 海外流媒体"
       },
       {
         "rule_set": ["privatesite", "privateip", "cnsite", "cnip", "cngames"],

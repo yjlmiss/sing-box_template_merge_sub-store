@@ -20,22 +20,19 @@
     "servers": [
       {
         "tag": "proxy_dns",
-        "address": "8.8.8.8",
+        "type": "udp",
+        "server": "8.8.8.8",
         "detour": "🐋 默认节点"
       },
       {
         "tag": "cn_dns",
-        "address": "114.114.114.114",
-        "detour": "🚅 国内流量"
+        "type": "udp",
+        "server": "114.114.114.114"
       }
     ],
     "rules": [
       {
         "rule_set": "cnsite",
-        "server": "cn_dns"
-      },
-      {
-        "outbound": "any",
         "server": "cn_dns"
       }
     ],
@@ -55,6 +52,7 @@
     },
     {
       "type": "mixed",
+      "tag": "mixed-in",
       "listen": "::",
       "listen_port": 7890
     }
@@ -120,6 +118,7 @@
   "route": {
     "final": "🐋 默认节点",
     "auto_detect_interface": true,
+    "default_domain_resolver": "cn_dns",
     "rule_set": [
       {
         "tag": "privatesite",
@@ -264,14 +263,6 @@
         "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/sing/geo/geosite/bilibili.srs",
         "update_interval": "24h",
         "download_detour": "🐋 默认节点"
-      },
-      {
-        "tag": "notcn",
-        "type": "remote",
-        "format": "binary",
-        "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/sing/geo/geosite/geolocation-!cn.srs",
-        "update_interval": "24h",
-        "download_detour": "🐋 默认节点"
       }
     ],
     "rules": [
@@ -284,7 +275,7 @@
       },
       {
         "clash_mode": "Direct",
-        "outbound": "🔄 直连入口"
+        "outbound": "direct-tag"
       },
       {
         "clash_mode": "Global",

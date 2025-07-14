@@ -21,7 +21,7 @@
       {
         "tag": "proxy_dns",
         "type": "udp",
-        "server": "1.1.1.1",
+        "server": "8.8.8.8",
         "detour": "🐋 默认节点"
       },
       {

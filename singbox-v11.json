@@ -20,7 +20,7 @@
     "servers": [
       {
         "tag": "proxy_dns",
-        "address": "1.1.1.1",
+        "address": "8.8.8.8",
         "detour": "🐋 默认节点"
       },
       {
