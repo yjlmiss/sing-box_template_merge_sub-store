@@ -71,8 +71,8 @@
       "tag": "🎚️ 自动选择",
       "url": "https://cp.cloudflare.com",
       "outbounds": [],
-      "interval": "30s",
-      "tolerance": 10
+      "interval": "3m",
+      "tolerance": 30
     },
     {
       "type": "selector",
