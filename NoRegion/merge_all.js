@@ -12,22 +12,22 @@ let proxies = await produceArtifact({
 });
 
 // 3. 去重：过滤掉已有的 tag
-const existingTags = config.outbounds.map(o => o.tag);
-proxies = proxies.filter(p => !existingTags.includes(p.tag));
+const existingTags = config.outbounds.map((o) => o.tag);
+proxies = proxies.filter((p) => !existingTags.includes(p.tag));
 
 // 4. 将新节点添加到 outbounds 数组（供分组引用）
 config.outbounds.push(...proxies);
 
 // 5. 准备两份 tag 列表
-const allTags      = proxies.map(p => p.tag);
-const terminalTags = proxies.filter(p => !p.detour).map(p => p.tag);
+const allTags = proxies.map((p) => p.tag);
+const terminalTags = proxies.filter((p) => !p.detour).map((p) => p.tag);
 
 // 6. 遍历每个分组，追加节点
-config.outbounds.forEach(group => {
+config.outbounds.forEach((group) => {
   // 只处理有 outbounds 数组的分组，且跳过直连入口
   if (!Array.isArray(group.outbounds) || group.tag === "🔄 直连入口") return;
 
-  if (group.tag === "🔗 中继节点") {
+  if (group.tag === "🔗 中继前置") {
     // “🔗 中继节点” 只追加不带 detour 的终端节点
     group.outbounds.push(...terminalTags);
   } else {
@@ -37,7 +37,7 @@ config.outbounds.forEach(group => {
 });
 
 // 7. 去重每个分组内部可能的重复 tag
-config.outbounds.forEach(group => {
+config.outbounds.forEach((group) => {
   if (Array.isArray(group.outbounds)) {
     group.outbounds = [...new Set(group.outbounds)];
   }

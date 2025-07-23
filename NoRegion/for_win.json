@@ -20,7 +20,7 @@
     "servers": [
       {
         "tag": "proxy_dns",
-        "type": "udp",
+        "type": "https",
         "server": "8.8.8.8",
         "detour": "🐋 默认节点"
       },
@@ -28,17 +28,77 @@
         "tag": "cn_dns",
         "type": "udp",
         "server": "114.114.114.114"
+      },
+      {
+        "tag": "ai_dns",
+        "type": "https",
+        "server": "8.8.8.8",
+        "detour": "🤖 海外AI服务"
+      },
+      {
+        "tag": "media_dns",
+        "type": "https",
+        "server": "8.8.8.8",
+        "detour": "🎥 海外流媒体"
+      },
+      {
+        "tag": "tiktok_dns",
+        "type": "https",
+        "server": "8.8.8.8",
+        "detour": "🎵 TikTok"
+      },
+      {
+        "tag": "paypal_dns",
+        "type": "https",
+        "server": "8.8.8.8",
+        "detour": "🗃️ PayPal"
+      },
+      {
+        "tag": "telegram_dns",
+        "type": "https",
+        "server": "8.8.8.8",
+        "detour": "📟 Telegram"
+      },
+      {
+        "tag": "emby_dns",
+        "type": "https",
+        "server": "8.8.8.8",
+        "detour": "📽️ 黑猫emby"
       }
     ],
     "rules": [
+      {
+        "domain_suffix": ["uuuoo.cc", "emby.bid", "emby.date", "emby.loan", "emby.trade"],
+        "server": "emby_dns"
+      },
+      {
+        "rule_set": "telegramsite",
+        "server": "telegram_dns"
+      },
+      {
+        "rule_set": "tiktok",
+        "server": "tiktok_dns"
+      },
+      {
+        "rule_set": "paypal",
+        "server": "paypal_dns"
+      },
+      {
+        "rule_set": "aiservice",
+        "server": "ai_dns"
+      },
+      {
+        "rule_set": ["netflixsite", "hbo", "disney", "hulu"],
+        "server": "media_dns"
+      },
       {
         "rule_set": "cnsite",
         "server": "cn_dns"
       }
     ],
     "final": "proxy_dns",
-    "disable_cache": true,
-    "independent_cache": false,
+    "disable_cache": false,
+    "independent_cache": true,
     "strategy": "ipv4_only"
   },
   "inbounds": [
@@ -72,11 +132,12 @@
       "tag": "🎚️ 自动选择",
       "url": "https://cp.cloudflare.com",
       "outbounds": [],
-      "interval": "300s"
+      "interval": "3m",
+      "tolerance": 30
     },
     {
       "type": "selector",
-      "tag": "🔗 中继节点",
+      "tag": "🔗 中继前置",
       "outbounds": ["🔄 直连入口"]
     },
     {
@@ -111,12 +172,12 @@
     },
     {
       "type": "selector",
-      "tag": "📽️ 黑猫emby",
+      "tag": "📟 Telegram",
       "outbounds": ["🐋 默认节点", "🎚️ 自动选择", "🚅 国内流量"]
     },
     {
       "type": "selector",
-      "tag": "📟 Telegram",
+      "tag": "📽️ 黑猫emby",
       "outbounds": ["🐋 默认节点", "🎚️ 自动选择", "🚅 国内流量"]
     }
   ],
@@ -279,11 +340,11 @@
         "action": "hijack-dns"
       },
       {
-        "clash_mode": "Direct",
+        "clash_mode": "direct",
         "outbound": "🔄 直连入口"
       },
       {
-        "clash_mode": "Global",
+        "clash_mode": "global",
         "outbound": "🐋 默认节点"
       },
       {
@@ -291,16 +352,8 @@
         "outbound": "📽️ 黑猫emby"
       },
       {
-        "rule_set": "bilibili",
-        "outbound": "📺 哔哩哔哩"
-      },
-      {
         "rule_set": "paypal",
         "outbound": "🗃️ PayPal"
-      },
-      {
-        "rule_set": "aiservice",
-        "outbound": "🤖 海外AI服务"
       },
       {
         "rule_set": ["telegramip", "telegramsite"],
@@ -309,6 +362,14 @@
       {
         "rule_set": "tiktok",
         "outbound": "🎵 TikTok"
+      },
+      {
+        "rule_set": "aiservice",
+        "outbound": "🤖 海外AI服务"
+      },
+      {
+        "rule_set": "bilibili",
+        "outbound": "📺 哔哩哔哩"
       },
       {
         "rule_set": ["netflixsite", "netflixip", "hbo", "disney", "hulu"],
