@@ -3,9 +3,9 @@
 ## 使用说明
 本项目所搭载的js脚本，必须在[sub-store](https://github.com/sub-store-org/Sub-Store)内使用，仅测试了项目中的singbox模板，未测试其他模板，该模板官方1.12或1.11内核一定可以使用，其余版本未测试。
 
-适用1.12内核的：*singbox_for_win_template.json*  *singbox_for_wrt_template.json*，以及无分区的*for_win.json*  *for_wrt.json*
+适用1.12内核的：*singbox_for_win_template.json*  *singbox_for_wrt_template.json*，以及无地区分组的*for_win.json*  *for_wrt.json*
 
-适用1.11内核的：*singbox-v11.json* ，以及无分区的*for_v11.json*
+适用1.11内核的：*singbox-v11.json* 
 
 单独提供1.11的模板是因为目前iOS商店中的[【sing-box VT  APP】](https://apps.apple.com/us/app/sing-box-vt/id6673731168)使用的是1.11内核
 
