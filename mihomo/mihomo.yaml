@@ -1,0 +1,269 @@
+#统一延迟测速和tcp并发
+tcp-concurrent: true
+unified-delay: true
+#dns配置
+dns:
+  enable: true
+  enhanced-mode: fake-ip
+  fake-ip-range: 198.18.0.1/16
+  nameserver:
+    - 114.114.114.114
+    - 119.29.29.29
+  fallback:
+    - 8.8.8.8#默认节点
+  proxy-server-nameserver:
+    - 114.114.114.114
+    - 119.29.29.29
+  use-hosts: true
+  use-system-hosts: true
+  fake-ip-filter:
+    # 本地网络及保留域名
+    - "*.lan"
+    - "*.local"
+    - "*.localhost"
+    - "*.localdomain"
+    - "*.home.arpa"
+    - "*.invalid"
+    # NTP 时间同步服务
+    - "+.pool.ntp.org"
+    - "time.*.com"
+    - "time.*.gov"
+    - "time.*.edu.cn"
+    - "time.*.apple.com"
+    - "time-ios.apple.com"
+    - "ntp.*.com"
+    - "*.ntp.org.cn"
+    - "*.time.edu.cn"
+    # STUN 服务
+    - "+.stun"
+    - trun.cloudflare.com
+    # Google
+    - "lens.l.google.com"
+    - "stun.l.google.com"
+    # 米家物联网
+    - "Mijia Cloud"
+
+proxy-groups:
+  #规则匹配组
+  - name: 默认节点
+    type: select
+    proxies: [自动选择, DIRECT]
+    icon: https://raw.githubusercontent.com/Orz-3/mini/refs/heads/master/Color/Kuai.png
+
+  - name: 自动选择
+    type: url-test
+    url: https://www.gstatic.com/generate_204
+    interval: 300
+    proxies: []
+    icon: https://raw.githubusercontent.com/Koolson/Qure/refs/heads/master/IconSet/Color/Speedtest.png
+
+  - name: 中继前置
+    type: select
+    proxies: [DIRECT]
+    icon: https://raw.githubusercontent.com/Koolson/Qure/refs/heads/master/IconSet/Color/TestFlight.png
+
+  - name: 国内直连
+    type: select
+    proxies: [DIRECT, 默认节点, 自动选择]
+    icon: https://raw.githubusercontent.com/Koolson/Qure/refs/heads/master/IconSet/Color/Bypass.png
+
+  - name: 哔哩哔哩
+    type: select
+    proxies: [国内直连, 默认节点, 自动选择]
+    icon: https://raw.githubusercontent.com/Koolson/Qure/refs/heads/master/IconSet/Color/bilibili.png
+
+  - name: 海外AI服务
+    type: select
+    proxies: [默认节点, 自动选择, 国内直连]
+    icon: https://raw.githubusercontent.com/Koolson/Qure/refs/heads/master/IconSet/Color/ChatGPT.png
+
+  - name: 海外流媒体
+    type: select
+    proxies: [默认节点, 自动选择, 国内直连]
+    icon: https://raw.githubusercontent.com/Koolson/Qure/refs/heads/master/IconSet/Color/Netflix.png
+
+  - name: TikTok
+    type: select
+    proxies: [默认节点, 自动选择, 国内直连]
+    icon: https://raw.githubusercontent.com/Koolson/Qure/refs/heads/master/IconSet/Color/TikTok.png
+
+  - name: PayPal
+    type: select
+    proxies: [默认节点, 自动选择, 国内直连]
+    icon: https://raw.githubusercontent.com/Koolson/Qure/refs/heads/master/IconSet/Color/PayPal.png
+
+  - name: 黑猫emby
+    type: select
+    proxies: [默认节点, 自动选择, 国内直连]
+    icon: https://raw.githubusercontent.com/Koolson/Qure/refs/heads/master/IconSet/Color/Emby.png
+
+  - name: Telegram
+    type: select
+    proxies: [默认节点, 自动选择, 国内直连]
+    icon: https://raw.githubusercontent.com/Koolson/Qure/refs/heads/master/IconSet/Color/Telegram.png
+
+rule-providers:
+  privatesite:
+    type: http
+    behavior: domain
+    format: mrs
+    url: "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/private.mrs"
+    path: ./ruleset/privatesite.mrs
+    interval: 86400
+  privateip:
+    type: http
+    behavior: ipcidr
+    format: mrs
+    url: "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geoip/private.mrs"
+    path: ./ruleset/privateip.mrs
+    interval: 86400
+  cnsite:
+    type: http
+    behavior: domain
+    format: mrs
+    url: "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/cn.mrs"
+    path: ./ruleset/cnsite.mrs
+    interval: 86400
+  cnip:
+    type: http
+    behavior: ipcidr
+    format: mrs
+    url: "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geoip/cn.mrs"
+    path: ./ruleset/cnip.mrs
+    interval: 86400
+  cngame:
+    type: http
+    behavior: domain
+    format: mrs
+    url: "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/category-games-!cn@cn.mrs"
+    path: ./ruleset/cngame.mrs
+    interval: 86400
+  gfw:
+    type: http
+    behavior: domain
+    format: mrs
+    url: "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/gfw.mrs"
+    path: ./ruleset/gfw.mrs
+    interval: 86400
+  proxy:
+    type: http
+    behavior: domain
+    format: mrs
+    url: "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo-lite/geosite/proxy.mrs"
+    path: ./ruleset/proxy.mrs
+    interval: 86400
+  aiservice:
+    type: http
+    behavior: domain
+    format: mrs
+    url: "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/category-ai-!cn.mrs"
+    path: ./ruleset/aiservice.mrs
+    interval: 86400
+  paypal:
+    type: http
+    behavior: domain
+    format: mrs
+    url: "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/paypal.mrs"
+    path: ./ruleset/paypal.mrs
+    interval: 86400
+  tiktok:
+    type: http
+    behavior: domain
+    format: mrs
+    url: "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/tiktok.mrs"
+    path: ./ruleset/tiktok.mrs
+    interval: 86400
+  telegramsite:
+    type: http
+    behavior: domain
+    format: mrs
+    url: "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/telegram.mrs"
+    path: ./ruleset/telegramsite.mrs
+    interval: 86400
+  telegramip:
+    type: http
+    behavior: ipcidr
+    format: mrs
+    url: "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geoip/telegram.mrs"
+    path: ./ruleset/telegramip.mrs
+    interval: 86400
+  netflixsite:
+    type: http
+    behavior: domain
+    format: mrs
+    url: "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/netflix.mrs"
+    path: ./ruleset/netflixsite.mrs
+    interval: 86400
+  netflixip:
+    type: http
+    behavior: ipcidr
+    format: mrs
+    url: "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geoip/netflix.mrs"
+    path: ./ruleset/netflixip.mrs
+    interval: 86400
+  disney:
+    type: http
+    behavior: domain
+    format: mrs
+    url: "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/disney.mrs"
+    path: ./ruleset/disney.mrs
+    interval: 86400
+  hbo:
+    type: http
+    behavior: domain
+    format: mrs
+    url: "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/hbo.mrs"
+    path: ./ruleset/hbo.mrs
+    interval: 86400
+  hulu:
+    type: http
+    behavior: domain
+    format: mrs
+    url: "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/hulu.mrs"
+    path: ./ruleset/hulu.mrs
+    interval: 86400
+  bilibili:
+    type: http
+    behavior: domain
+    format: mrs
+    url: "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/bilibili.mrs"
+    path: ./ruleset/bilibili.mrs
+    interval: 86400
+
+rules:
+    #个人小众需求
+  - DST-PORT,3478,国内直连
+  - DST-PORT,5201,国内直连
+  - DOMAIN-keyword,stun,国内直连
+  - DOMAIN-SUFFIX,turn.cloudflare.com,国内直连
+  - DOMAIN-SUFFIX,emby.men,默认节点
+  - DOMAIN-SUFFIX,7pzzv.us,默认节点
+  - DOMAIN-SUFFIX,j03og.app,默认节点
+    #分流规则
+  - DOMAIN-SUFFIX,emby.bid,黑猫emby
+  - DOMAIN-SUFFIX,emby.date,黑猫emby
+  - DOMAIN-SUFFIX,emby.loan,黑猫emby
+  - DOMAIN-SUFFIX,emby.trade,黑猫emby
+  - DOMAIN-SUFFIX,uuuoo.cc,黑猫emby
+  - RULE-SET,bilibili,哔哩哔哩
+  - RULE-SET,paypal,PayPal
+  - RULE-SET,aiservice,海外AI服务
+  - RULE-SET,tiktok,TikTok
+  - RULE-SET,telegramsite,Telegram
+  - RULE-SET,netflixsite,海外流媒体
+  - RULE-SET,disney,海外流媒体
+  - RULE-SET,hbo,海外流媒体
+  - RULE-SET,hulu,海外流媒体
+    #核心规则
+  - RULE-SET,cngame,国内直连
+  - RULE-SET,privatesite,国内直连
+  - RULE-SET,cnsite,国内直连
+  - RULE-SET,gfw,默认节点
+  - RULE-SET,proxy,默认节点
+    #ip规则置下减少dns查询
+  - RULE-SET,telegramip,Telegram
+  - RULE-SET,netflixip,海外流媒体
+  - RULE-SET,privateip,国内直连
+  - RULE-SET,cnip,国内直连
+    #兜底规则
+  - MATCH,默认节点
