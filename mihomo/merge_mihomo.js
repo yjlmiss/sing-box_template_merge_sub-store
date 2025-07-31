@@ -1,5 +1,6 @@
 const { name, type } = $arguments;
 let s = $files[0];
+
 // 1. 拉取订阅节点列表并去掉无用字段
 let p = await produceArtifact({
   name,
@@ -12,22 +13,26 @@ p = p.map(x => {
   delete x._subDisplayName;
   return x;
 });
-// 2. 输出为 YAML 格式到 proxies 段
-let e = ProxyUtils.yaml.safeDump(p)
-  .split('\n')
-  .map(line => '  ' + line)
-  .join('\n');
-s = s.replace(/(?=^proxy-groups:)/m, `proxies:\n${e}\n`);
-// 3. 追加分组成员名并将含有dailer-proxy字段的节点排除中继前置组
+
+// 2. 输出为单行 JSON 到 proxies 段
+let e = p.map(x => `  - ${JSON.stringify(x)}`).join("\n");
+s = s.replace(/(?=^proxy-groups:)/m, `proxies:\n${e}\n\n`);
+
+// 3. 追加分组成员名，并只排除含有dialer-proxy的节点进“中继前置”组
 let all = p.map(x => x.name);
 let r = p.filter(x => !x["dialer-proxy"]).map(x => x.name);
+
 s = s.replace(
   /^(\s{2}- name:[\s\S]*?)\s{4}proxies:\s*\[([^\]]*)\]/gm,
   (m, head, body) => {
     let ex = body.split(",").map(x => x.trim()).filter(Boolean);
-    let add = head.includes("中继前置") ? r : all;
+    // 精确提取分组名
+    let groupMatch = head.match(/- name:\s*([^\n]+)/);
+    let groupName = groupMatch ? groupMatch[1].trim() : "";
+    let add = (groupName === "中继前置") ? r : all;
     let merged = [...new Set([...ex, ...add])];
     return `${head}    proxies: [${merged.join(", ")}]`;
   }
 );
+
 $content = s;
