@@ -38,6 +38,10 @@
     ],
     "rules": [
       {
+        "query_type": "HTTPS",
+        "action": "reject"
+      },
+      {
         "type": "logical",
         "mode": "or",
         "rules": [
@@ -45,20 +49,19 @@
             "rule_set": "cnsite"
           },
           {
-            "port": [5201, 3478]
-          },
-          {
             "domain_keyword": "stun"
           },
           {
-            "source_ip_cidr": "10.0.0.251/32"
+            "domain_suffix": "ugediao.com"
           }
         ],
         "server": "cn_dns"
       },
       {
         "query_type": ["A", "AAAA"],
-        "server": "fake_dns"
+        "action": "route",
+        "server": "fake_dns",
+        "rewrite_ttl": 1
       }
     ],
     "disable_cache": false,
@@ -308,30 +311,6 @@
       {
         "clash_mode": "global",
         "outbound": "🐋 默认节点"
-      },
-      {
-        "port": [5201, 3478],
-        "outbound": "🔄 直连入口"
-      },
-      {
-        "domain_keyword": "stun",
-        "outbound": "🔄 直连入口"
-      },
-      {
-        "source_ip_cidr": "10.0.0.251/32",
-        "outbound": "🔄 直连入口"
-      },
-      {
-        "domain_suffix": ["nz.ugediao.com", "7pzzv.us", "j03og.app", "loli.net", "nicetheme.cn"],
-        "outbound": "🐋 默认节点"
-      },
-      {
-        "domain_suffix": "dcard.tw",
-        "outbound": "链式 台湾Akile"
-      },
-      {
-        "domain_suffix": "dmm.co.jp",
-        "outbound": "日本 CLAW"
       },
       {
         "domain_suffix": ["uuuoo.cc", "emby.bid", "emby.date", "emby.loan", "emby.trade"],

@@ -4,27 +4,31 @@ unified-delay: true
 #dns配置
 dns:
   enable: true
+  use-hosts: true
+  use-system-hosts: true
+  ipv6: true
   enhanced-mode: fake-ip
   fake-ip-range: 198.18.0.1/16
   nameserver:
     - 114.114.114.114
-    - 119.29.29.29
   fallback:
-    - 8.8.8.8#默认节点
+    - 8.8.8.8
+  respect-rules: true
   proxy-server-nameserver:
-    - 114.114.114.114
-    - 119.29.29.29
-  use-hosts: true
-  use-system-hosts: true
+    - 114.114.114.114 
   fake-ip-filter:
-    # 本地网络及保留域名
+    #个人需求
+    - "+.miguvideo.com"
+    - "+.migucloud.com"
+    - "+.ugediao.com"
+    #本地网络及保留域名
     - "*.lan"
     - "*.local"
     - "*.localhost"
     - "*.localdomain"
     - "*.home.arpa"
     - "*.invalid"
-    # NTP 时间同步服务
+    #NTP 时间同步服务
     - "+.pool.ntp.org"
     - "time.*.com"
     - "time.*.gov"
@@ -34,14 +38,18 @@ dns:
     - "ntp.*.com"
     - "*.ntp.org.cn"
     - "*.time.edu.cn"
-    # STUN 服务
+    #STUN 服务
     - "+.stun"
-    - trun.cloudflare.com
-    # Google
+    - turn.cloudflare.com
+    #Google
     - "lens.l.google.com"
-    - "stun.l.google.com"
-    # 米家物联网
+    #米家物联网
     - "Mijia Cloud"
+    #快捷登录
+    - "graph.qq.com"
+    - "+.ptlogin2.qq.com"
+  nameserver-policy:
+    "+.arpa": "127.0.0.1"
 
 proxy-groups:
   #规则匹配组
@@ -62,44 +70,39 @@ proxy-groups:
     proxies: [DIRECT]
     icon: https://raw.githubusercontent.com/Koolson/Qure/refs/heads/master/IconSet/Color/TestFlight.png
 
-  - name: 国内直连
-    type: select
-    proxies: [DIRECT, 默认节点, 自动选择]
-    icon: https://raw.githubusercontent.com/Koolson/Qure/refs/heads/master/IconSet/Color/Bypass.png
-
   - name: 哔哩哔哩
     type: select
-    proxies: [国内直连, 默认节点, 自动选择]
+    proxies: [DIRECT, 默认节点, 自动选择]
     icon: https://raw.githubusercontent.com/Koolson/Qure/refs/heads/master/IconSet/Color/bilibili.png
 
   - name: 海外AI服务
     type: select
-    proxies: [默认节点, 自动选择, 国内直连]
+    proxies: [默认节点, 自动选择, DIRECT]
     icon: https://raw.githubusercontent.com/Koolson/Qure/refs/heads/master/IconSet/Color/ChatGPT.png
 
   - name: 海外流媒体
     type: select
-    proxies: [默认节点, 自动选择, 国内直连]
+    proxies: [默认节点, 自动选择, DIRECT]
     icon: https://raw.githubusercontent.com/Koolson/Qure/refs/heads/master/IconSet/Color/Netflix.png
 
   - name: TikTok
     type: select
-    proxies: [默认节点, 自动选择, 国内直连]
+    proxies: [默认节点, 自动选择, DIRECT]
     icon: https://raw.githubusercontent.com/Koolson/Qure/refs/heads/master/IconSet/Color/TikTok.png
 
   - name: PayPal
     type: select
-    proxies: [默认节点, 自动选择, 国内直连]
+    proxies: [默认节点, 自动选择, DIRECT]
     icon: https://raw.githubusercontent.com/Koolson/Qure/refs/heads/master/IconSet/Color/PayPal.png
 
   - name: 黑猫emby
     type: select
-    proxies: [默认节点, 自动选择, 国内直连]
+    proxies: [默认节点, 自动选择, DIRECT]
     icon: https://raw.githubusercontent.com/Koolson/Qure/refs/heads/master/IconSet/Color/Emby.png
 
   - name: Telegram
     type: select
-    proxies: [默认节点, 自动选择, 国内直连]
+    proxies: [默认节点, 自动选择, DIRECT]
     icon: https://raw.githubusercontent.com/Koolson/Qure/refs/heads/master/IconSet/Color/Telegram.png
 
 rule-providers:
@@ -231,16 +234,21 @@ rule-providers:
     interval: 86400
 
 rules:
-    #个人小众需求
-  - DST-PORT,3478,国内直连
-  - DST-PORT,5201,国内直连
-  - DOMAIN-keyword,stun,国内直连
-  - DOMAIN-SUFFIX,turn.cloudflare.com,国内直连
-  - DOMAIN-SUFFIX,emby.men,默认节点
+  #个人小众需求
+  - DST-PORT,3478,DIRECT
+  - DST-PORT,5201,DIRECT
+  - DST-PORT,22,DIRECT
+  - SRC-IP-CIDR,10.0.0.251/32,DIRECT
+  - DOMAIN-keyword,stun,DIRECT
+  - DOMAIN-SUFFIX,turn.cloudflare.com,DIRECT
   - DOMAIN-SUFFIX,7pzzv.us,默认节点
   - DOMAIN-SUFFIX,j03og.app,默认节点
-    #分流规则
+  - DOMAIN-SUFFIX,cjchao.com,默认节点
+  - DOMAIN-SUFFIX,qianchengwandian.top,默认节点
+  - DOMAIN-SUFFIX,szaction.cc,默认节点
+  #分流规则
   - DOMAIN-SUFFIX,emby.bid,黑猫emby
+  - DOMAIN-SUFFIX,emby.men,黑猫emby
   - DOMAIN-SUFFIX,emby.date,黑猫emby
   - DOMAIN-SUFFIX,emby.loan,黑猫emby
   - DOMAIN-SUFFIX,emby.trade,黑猫emby
@@ -255,15 +263,15 @@ rules:
   - RULE-SET,hbo,海外流媒体
   - RULE-SET,hulu,海外流媒体
     #核心规则
-  - RULE-SET,cngame,国内直连
-  - RULE-SET,privatesite,国内直连
-  - RULE-SET,cnsite,国内直连
+  - RULE-SET,cngame,DIRECT
+  - RULE-SET,privatesite,DIRECT
+  - RULE-SET,cnsite,DIRECT
   - RULE-SET,gfw,默认节点
   - RULE-SET,proxy,默认节点
     #ip规则置下减少dns查询
   - RULE-SET,telegramip,Telegram
   - RULE-SET,netflixip,海外流媒体
-  - RULE-SET,privateip,国内直连
-  - RULE-SET,cnip,国内直连
+  - RULE-SET,privateip,DIRECT
+  - RULE-SET,cnip,DIRECT
     #兜底规则
   - MATCH,默认节点
