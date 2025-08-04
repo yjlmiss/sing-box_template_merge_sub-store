@@ -17,10 +17,6 @@ dns:
   proxy-server-nameserver:
     - 114.114.114.114 
   fake-ip-filter:
-    #个人需求
-    - "+.miguvideo.com"
-    - "+.migucloud.com"
-    - "+.ugediao.com"
     #本地网络及保留域名
     - "*.lan"
     - "*.local"
@@ -41,6 +37,7 @@ dns:
     #STUN 服务
     - "+.stun"
     - turn.cloudflare.com
+    - "+.rustdesk.com"
     #Google
     - "lens.l.google.com"
     #米家物联网
@@ -120,13 +117,6 @@ rule-providers:
     url: "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geoip/private.mrs"
     path: ./ruleset/privateip.mrs
     interval: 86400
-  cnsite:
-    type: http
-    behavior: domain
-    format: mrs
-    url: "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/cn.mrs"
-    path: ./ruleset/cnsite.mrs
-    interval: 86400
   cnip:
     type: http
     behavior: ipcidr
@@ -147,13 +137,6 @@ rule-providers:
     format: mrs
     url: "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/gfw.mrs"
     path: ./ruleset/gfw.mrs
-    interval: 86400
-  proxy:
-    type: http
-    behavior: domain
-    format: mrs
-    url: "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo-lite/geosite/proxy.mrs"
-    path: ./ruleset/proxy.mrs
     interval: 86400
   aiservice:
     type: http
@@ -238,9 +221,11 @@ rules:
   - DST-PORT,3478,DIRECT
   - DST-PORT,5201,DIRECT
   - DST-PORT,22,DIRECT
-  - SRC-IP-CIDR,10.0.0.251/32,DIRECT
   - DOMAIN-keyword,stun,DIRECT
   - DOMAIN-SUFFIX,turn.cloudflare.com,DIRECT
+  - DOMAIN-SUFFIX,rustdesk.com,DIRECT
+  - DOMAIN-SUFFIX,miguvideo.com,DIRECT
+  - DOMAIN-SUFFIX,migucloud.com,DIRECT
   - DOMAIN-SUFFIX,7pzzv.us,默认节点
   - DOMAIN-SUFFIX,j03og.app,默认节点
   - DOMAIN-SUFFIX,cjchao.com,默认节点
@@ -262,16 +247,14 @@ rules:
   - RULE-SET,disney,海外流媒体
   - RULE-SET,hbo,海外流媒体
   - RULE-SET,hulu,海外流媒体
-    #核心规则
+    #以下均是核心规则
   - RULE-SET,cngame,DIRECT
   - RULE-SET,privatesite,DIRECT
-  - RULE-SET,cnsite,DIRECT
   - RULE-SET,gfw,默认节点
-  - RULE-SET,proxy,默认节点
     #ip规则置下减少dns查询
   - RULE-SET,telegramip,Telegram
   - RULE-SET,netflixip,海外流媒体
   - RULE-SET,privateip,DIRECT
   - RULE-SET,cnip,DIRECT
-    #兜底规则
+    #代理规则
   - MATCH,默认节点
