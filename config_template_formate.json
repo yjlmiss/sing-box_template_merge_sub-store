@@ -1,0 +1,89 @@
+{
+  "log": { "level": "info", "timestamp": true },
+  "dns": {
+    "servers": [
+      { "tag": "dns_proxy", "address": "tls://1.1.1.1", "address_resolver": "dns_resolver", "detour": "🐋 默认节点" },
+      { "tag": "dns_direct", "address": "h3://dns.alidns.com/dns-query", "address_resolver": "dns_resolver", "detour": "🔄 直连入口" },
+      { "tag": "dns_fakeip", "address": "fakeip" },
+      { "tag": "dns_resolver", "address": "223.5.5.5", "detour": "🔄 直连入口" },
+      { "tag": "block", "address": "rcode://success" }
+    ],
+    "rules": [
+      { "rule_set": "geosite-category-ads-all", "server": "block", "disable_cache": true },
+      { "rule_set": "geosite-geolocation-not-cn", "query_type": ["AAAA"], "server": "block" },
+      { "rule_set": "geosite-geolocation-not-cn", "query_type": ["A"], "server": "dns_fakeip" },
+      { "rule_set": "geosite-geolocation-not-cn", "server": "dns_proxy" },
+      { "rule_set": "cnsite", "server": "dns_direct" }
+    ],
+    "final": "dns_direct",
+    "independent_cache": true,
+    "fakeip": { "enabled": true, "inet4_range": "198.18.0.0/15" },
+    "strategy": "ipv4_only"
+  },
+  "ntp": { "enabled": true, "server": "time.apple.com", "server_port": 123, "interval": "30m", "detour": "🔄 直连入口" },
+  "inbounds": [
+    { "type": "mixed", "tag": "mixed-in", "listen": "0.0.0.0", "listen_port": 2080 },
+    { "type": "tun", "tag": "tun-in", "interface_name": "tun0", "address": ["172.19.0.1/30"], "auto_redirect": true, "auto_route": true, "stack": "system", "sniff": true, "sniff_override_destination": true }
+  ],
+  "outbounds": [
+    { "type": "direct", "tag": "🔄 直连入口" },
+    { "type": "block", "tag": "REJECT" },
+    { "type": "selector", "tag": "🐋 默认节点", "outbounds": ["⚙️ 手动切换", "🎚️ 自动选择", "🔄 直连入口", "🇭🇰 香港节点", "🇹🇼 台湾节点", "🇸🇬 新加坡节点", "🇺🇸 美国节点", "🇯🇵 日本节点"] },
+    { "type": "selector", "tag": "⚙️ 手动切换", "outbounds": [] },
+    { "type": "urltest", "tag": "🎚️ 自动选择", "url": "https://cp.cloudflare.com", "outbounds": [], "interval": "300s" },
+    { "type": "selector", "tag": "🚅 国内流量", "outbounds": ["🔄 直连入口", "🐋 默认节点"] },
+    { "type": "selector", "tag": "📺 哔哩哔哩", "outbounds": ["🚅 国内流量", "🇭🇰 香港节点", "🇹🇼 台湾节点"] },
+    { "type": "selector", "tag": "🤖 海外AI服务", "outbounds": ["🐋 默认节点", "🇺🇸 美国节点", "🇯🇵 日本节点", "🔄 直连入口"] },
+    { "type": "selector", "tag": "🎥 海外流媒体", "outbounds": ["🐋 默认节点", "🇭🇰 香港节点", "🇹🇼 台湾节点", "🇸🇬 新加坡节点", "🇺🇸 美国节点", "🇯🇵 日本节点"] },
+    { "type": "selector", "tag": "🎵 TikTok", "outbounds": ["🇸🇬 新加坡节点", "🇺🇸 美国节点", "🇯🇵 日本节点"] },
+    { "type": "selector", "tag": "🗃️ PayPal", "outbounds": ["🇺🇸 美国节点", "🐋 默认节点"] },
+    { "type": "selector", "tag": "📽️ 黑猫emby", "outbounds": ["🔄 直连入口", "🐋 默认节点"] },
+    { "type": "selector", "tag": "📟 Telegram", "outbounds": ["🐋 默认节点", "🇸🇬 新加坡节点"] },
+    { "type": "urltest", "tag": "🇭🇰 香港节点", "url": "https://cp.cloudflare.com", "outbounds": [], "interval": "300s" },
+    { "type": "urltest", "tag": "🇹🇼 台湾节点", "url": "https://cp.cloudflare.com", "outbounds": [], "interval": "300s" },
+    { "type": "urltest", "tag": "🇸🇬 新加坡节点", "url": "https://cp.cloudflare.com", "outbounds": [], "interval": "300s" },
+    { "type": "urltest", "tag": "🇺🇸 美国节点", "url": "https://cp.cloudflare.com", "outbounds": [], "interval": "300s" },
+    { "type": "urltest", "tag": "🇯🇵 日本节点", "url": "https://cp.cloudflare.com", "outbounds": [], "interval": "300s" }
+  ],
+  "route": {
+    "final": "🐋 默认节点",
+    "auto_detect_interface": true,
+    "default_domain_resolver": "dns_direct",
+    "rule_set": [
+      { "tag": "geosite-category-ads-all", "type": "remote", "format": "binary", "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/sing/geo/geosite/category-ads-all.srs", "download_detour": "🐋 默认节点", "update_interval": "24h" },
+      { "tag": "geosite-geolocation-not-cn", "type": "remote", "format": "binary", "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/sing/geo/geosite/geolocation-!cn.srs", "download_detour": "🐋 默认节点", "update_interval": "24h" },
+      { "tag": "privatesite", "type": "remote", "format": "binary", "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/sing/geo/geosite/private.srs", "update_interval": "24h", "download_detour": "🐋 默认节点" },
+      { "tag": "privateip", "type": "remote", "format": "binary", "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/sing/geo/geoip/private.srs", "update_interval": "24h", "download_detour": "🐋 默认节点" },
+      { "tag": "cnsite", "type": "remote", "format": "binary", "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/sing/geo/geosite/cn.srs", "update_interval": "24h", "download_detour": "🐋 默认节点" },
+      { "tag": "cnip", "type": "remote", "format": "binary", "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/sing/geo/geoip/cn.srs", "update_interval": "24h", "download_detour": "🐋 默认节点" },
+      { "tag": "gfw", "type": "remote", "format": "binary", "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/sing/geo/geosite/gfw.srs", "update_interval": "24h", "download_detour": "🐋 默认节点" },
+      { "tag": "proxy", "type": "remote", "format": "binary", "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/sing/geo-lite/geosite/proxy.srs", "update_interval": "24h", "download_detour": "🐋 默认节点" },
+      { "tag": "aiservice", "type": "remote", "format": "binary", "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/sing/geo/geosite/category-ai-!cn.srs", "update_interval": "24h", "download_detour": "🐋 默认节点" },
+      { "tag": "paypal", "type": "remote", "format": "binary", "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/sing/geo/geosite/paypal.srs", "update_interval": "24h", "download_detour": "🐋 默认节点" },
+      { "tag": "tiktok", "type": "remote", "format": "binary", "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/sing/geo/geosite/tiktok.srs", "update_interval": "24h", "download_detour": "🐋 默认节点" },
+      { "tag": "telegramip", "type": "remote", "format": "binary", "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/sing/geo/geoip/telegram.srs", "update_interval": "24h", "download_detour": "🐋 默认节点" },
+      { "tag": "telegramsite", "type": "remote", "format": "binary", "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/sing/geo/geosite/telegram.srs", "update_interval": "24h", "download_detour": "🐋 默认节点" },
+      { "tag": "netflixsite", "type": "remote", "format": "binary", "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/sing/geo/geosite/netflix.srs", "update_interval": "24h", "download_detour": "🐋 默认节点" },
+      { "tag": "bilibili", "type": "remote", "format": "binary", "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/sing/geo/geosite/bilibili.srs", "update_interval": "24h", "download_detour": "🐋 默认节点" }
+    ],
+    "rules": [
+      { "protocol": "dns", "action": "hijack-dns" },
+      { "clash_mode": "Direct", "outbound": "🔄 直连入口" },
+      { "clash_mode": "Global", "outbound": "🐋 默认节点" },
+      { "rule_set": "geosite-category-ads-all", "outbound": "REJECT" },
+      { "domain_suffix": ["uuuoo.cc", "emby.bid", "emby.date", "emby.loan", "emby.trade"], "outbound": "📽️ 黑猫emby" },
+      { "rule_set": "bilibili", "outbound": "📺 哔哩哔哩" },
+      { "rule_set": "paypal", "outbound": "🗃️ PayPal" },
+      { "rule_set": "aiservice", "outbound": "🤖 海外AI服务" },
+      { "rule_set": ["telegramip", "telegramsite"], "outbound": "📟 Telegram" },
+      { "rule_set": "tiktok", "outbound": "🎵 TikTok" },
+      { "rule_set": "netflixsite", "outbound": "🎥 海外流媒体" },
+      { "rule_set": ["privatesite", "privateip", "cnsite", "cnip"], "outbound": "🚅 国内流量" },
+      { "rule_set": ["gfw", "proxy"], "outbound": "🐋 默认节点" }
+    ]
+  },
+  "experimental": {
+    "clash_api": { "external_controller": "0.0.0.0:9090", "external_ui": "ui", "secret": "", "external_ui_download_url": "https://github.com/Zephyruso/zashboard/releases/latest/download/dist.zip", "external_ui_download_detour": "🐋 默认节点", "default_mode": "rule" },
+    "cache_file": { "enabled": true, "store_fakeip": true }
+  }
+}
